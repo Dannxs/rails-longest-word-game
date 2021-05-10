@@ -1,0 +1,34 @@
+<h1>Result</h1>
+<% @attempt = params[:answer] %>
+<% @grid = params[:grid].split(" ") %>
+<% @start_time = params[:start_time] %>
+<% @hash[:time] = (@hash[:time] - @start_time.to_datetime).to_i %>
+
+<% a = 0 %>
+<% b = @grid.size %>
+<% @attempt.upcase.chars.each do |char| %>
+  <% if @grid.include?(char) %>
+  <% a += 1 %>
+  <% @grid.delete_at(@grid.index(char.upcase)) %>
+  <% end %>
+<% end %>
+
+    <%@hash[:message] = "You don't score any point. You lose!"%>
+    <%@hash[:score] = 10 if a <= b && a == @attempt.size%>
+    <%if @hash[:score] != 0%>
+      <%@hash[:time] <= 20 ? @hash[:score] += 20 - @hash[:time] : @hash[:score] += 1%>
+      <%@hash[:score] += 2 * @attempt.size%>
+      <%@hash[:message] = "Well Done!"%>
+    <%end%>
+      <%@hash[:message] = "Your word it's not in the grid!" if a > b || a != @attempt.size%>
+    <%if "#{@user['found']}" == "false"%>
+      <%@hash[:message] = "Your word it's not an english word!"%>
+      <%@hash[:score] = 0%>
+    <%end%>
+
+<p><%= @hash[:message] %></p>
+
+<p> Your Score is <%= @hash[:score] %></p>
+
+<%= link_to 'Play again', '/new' %>
+
